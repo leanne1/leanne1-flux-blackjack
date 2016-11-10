@@ -8,14 +8,22 @@ import DeckStore from '../stores/DeckStore';
 
 export default class App extends Component { 
     static propTypes = {
-
     }
-    componentWillMount() {
-        DeckActions.create();
+    constructor() {
+        super();
+        this.state = {};
     }
     componentDidMount() {
+        DeckStore.addChangeListener(::this.onDeckStoreChange);
+    }
+    componentWillUnmount() {
+        DeckStore.removeChangeListener(::this.onDeckStoreChange);
+    }
+    getDeckState() {
+        return DeckStore.getAllDeck();
     }
     onDeckStoreChange() {
+        this.setState(this.getDeckState());
     }
     onHitClick() {
         console.log('Player chose hit')
@@ -23,19 +31,30 @@ export default class App extends Component {
     onStickClick() {
         console.log('Player chose stick')
     }
+    onNewGameClick() {
+        DeckActions.deal();
+    }
     render() {
+        const {
+            dealerHand,
+            playerHand,
+        } = this.state;
+        
         return (
         	<main>
         		<Scoreboard 
                     gameStatus='' />
                 
-                <Dealer />
+                <Dealer 
+                    cards={dealerHand} />
 
-                <Player />
+                <Player
+                    cards={playerHand} />
                 
                 <Controls 
                     onHitClick={::this.onHitClick}
-                    onStickClick={::this.onStickClick} />
+                    onStickClick={::this.onStickClick}
+                    onNewGameClick={::this.onNewGameClick} />
         	</main>
     	);
     }

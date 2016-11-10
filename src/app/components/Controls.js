@@ -4,20 +4,34 @@ export default class Controls extends Component {
     static propTypes = {
     	onHitClick: PropTypes.func.isRequired,
     	onStickClick: PropTypes.func.isRequired,
+        onNewGameClick: PropTypes.func.isRequired,
     }
     render() {
-        const { onHitClick, onStickClick } = this.props;
+        const {
+            onHitClick,
+            onStickClick,
+            onNewGameClick
+        } = this.props;
+        
         return (
         	<menu>
-        		<button
+        		
+                <button
         			onClick={onHitClick}>
         			Hit
     			</button>
-        		<button
+        		
+                <button
         			onClick={onStickClick}>
         			Stick
     			</button>
-        	</menu>
+                
+                <button
+                    onClick={onNewGameClick}>
+                    New Game
+                </button>    
+        	
+            </menu>
     	);
     }
 }

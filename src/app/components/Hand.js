@@ -3,7 +3,10 @@ import Card from './Card';
 
 export default class Hand extends Component { 
     static propTypes = {
-    	cards: PropTypes.array.isRequired,
+    	cards: PropTypes.array,
+    }
+    static defaultProps = {
+        cards: [],
     }
     componentWillMount() {
     	

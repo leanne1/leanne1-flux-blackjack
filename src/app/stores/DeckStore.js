@@ -1,4 +1,5 @@
 import EventEmitter from 'event-emitter';
+import { knuthShuffle as shuffle } from 'knuth-shuffle';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import actionTypes from '../constants/actionTypes'
 
@@ -27,15 +28,37 @@ const createCardDeck = () => {
 };
 
 /**
- * Take cards from the end of the deck.
- * @param {number} count - number of cards to take
+ * Shuffle the card deck.
  */
-const takeCards = (count) => {
-	deck.lastRemovedCards = deck.cards.splice(0, count);
+const shuffleDeck = (deck) => {
+	shuffle(deck);
+};
+
+/**
+ * Create a new card deck, shuffle it then cache it in the store.
+ */
+const newDeck = () => {
+	const newDeck = createCardDeck();
+	deck.cards = shuffle(newDeck);
+};
+
+/**
+ * Deal card/s from the end of the deck. Updates deck.cards length
+ * @param {number} count - number of cards to take
+ * @return {array} card/s removed from deck
+ */
+const dealCards = (count) => {
+	const nextDeck = [...deck.cards];
+	const dealtCards = nextDeck.splice(0, count);
+	deck.cards = nextDeck;
+	return dealtCards;
 };
 
 const DeckStore = Object.assign(new EventEmitter(), {
-	
+	getAllDeck() {
+		return deck;
+	},
+
 	emitChange() {
     	this.emit(CHANGE_EVENT);
   	},
@@ -54,13 +77,14 @@ const DeckStore = Object.assign(new EventEmitter(), {
     	this.removeListener(CHANGE_EVENT, callback);
   	},
 
-  	dispatcherIndex: AppDispatcher.register(({action}) => {
+  	dispatcherIndex: AppDispatcher.register(({ action }) => {
   		
 		switch(action.actionType) {
-  		 	case actionTypes.DECK_CREATE: 
-  		 		const newDeck = createCardDeck(); // TODOO: shuffle
-  		 		deck.cards = newDeck;
-  		 		console.warn('Card Deck:', deck.cards)
+  		 	case actionTypes.DECK_DEAL: 
+  		 		newDeck();
+  		 		deck.dealerHand = dealCards(2);
+  		 		deck.playerHand = dealCards(2);
+  		 		console.log('deck', deck)
   		 		DeckStore.emitChange();
   		 		break;
   		 }

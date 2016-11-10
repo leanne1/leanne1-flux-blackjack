@@ -3,11 +3,11 @@ import actionTypes from '../constants/actionTypes'
 
 export default {
 	/**
-	* Create the card deck.
+	* Create and shuffle a new deck then deal cards. Dispatched at start of new game.
    	*/
-	create() {
+	deal() {
 		AppDispatcher.handleViewAction({
-      		actionType: actionTypes.DECK_CREATE,
+      		actionType: actionTypes.DECK_DEAL,
       	});
 	}
 };

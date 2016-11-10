@@ -3,17 +3,18 @@ import Hand from './Hand';
 
 export default class Dealer extends Component { 
     static propTypes = {
+        cards: PropTypes.array,
     }
     render() {
+        const {
+            cards,
+        } = this.props;
+
         return (
         	<div>
         		<h2>Dealer</h2>
-        		 
                 <Hand
-                    cards={[
-                        { suit: 'clubs', faceValue: 6 },
-                        { suit: 'spades', faceValue: 12 }
-                    ]} />
+                    cards={cards} />
         	</div>
     	);
     }
