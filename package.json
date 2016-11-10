@@ -12,6 +12,7 @@
     "test:watch": "nwb test --server"
   },
   "dependencies": {
+    "event-emitter": "^0.3.4",
     "flux": "^3.1.0",
     "keymirror": "^0.1.1",
     "knuth-shuffle": "^1.0.1",
