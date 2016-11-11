@@ -1,11 +1,13 @@
 export const GAME = {
 	STATUS: {
-		COMPLETE: 'COMPLETE',
+		IN_PROGRESS: 'IN_PROGRESS', 
+		PLAYER_WINS: 'PLAYER_WINS',
+		DEALER_WINS: 'DEALER_WINS',
 		DRAW: 'DRAW',
 	},
 };
 
 export const PLAYERS = {
-	DEALER: 'Dealer',
-	PLAYER: 'Player',
+	DEALER: 'DEALER',
+	PLAYER: 'PLAYER',
 };

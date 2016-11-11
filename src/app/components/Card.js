@@ -4,14 +4,24 @@ export default class Card extends Component {
     static propTypes = {
     	suit: PropTypes.string.isRequired,
     	faceValue: PropTypes.number.isRequired,
+        isHidden: PropTypes.bool,
     }
     render() {
-        const { suit, faceValue } = this.props;
+        const {
+            suit,
+            faceValue,
+            isHidden,
+        } = this.props;
+        
         return (
-        	<div>
-        		{ suit }
-        		{ faceValue }
-        	</div>
+            <div className={isHidden ? 'card-hidden' : ''}>
+                { !isHidden &&
+                    <span>
+                        { suit }
+                        { faceValue }
+                    </span>
+                }
+            </div>
     	);
     }
 }

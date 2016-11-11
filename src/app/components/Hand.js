@@ -3,7 +3,8 @@ import Card from './Card';
 
 export default class Hand extends Component { 
     static propTypes = {
-    	cards: PropTypes.array,
+    	hideCard: PropTypes.number, 
+        cards: PropTypes.array,
     }
     static defaultProps = {
         cards: [],
@@ -12,11 +13,16 @@ export default class Hand extends Component {
     	
     }
     getCards(owner) {
-    	const { cards } = this.props;
-    	return cards.map((card, i) => {
+    	const { 
+            cards,
+            hideCard,
+        } = this.props;
+    	
+        return cards.map((card, i) => {
     		return <Card 
     					key={i}
-    					suit={card.suit}
+    					isHidden={i === hideCard}
+                        suit={card.suit}
     					faceValue={card.faceValue} />
     	});
     }

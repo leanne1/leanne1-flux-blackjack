@@ -4,7 +4,8 @@ import Player from './Player';
 import Scoreboard from './Scoreboard';
 import Controls from './Controls';
 import DeckActions from '../actions/DeckActions';
-import DeckStore from '../stores/DeckStore';
+import PlayerActions from '../actions/PlayerActions';
+import GameStore from '../stores/GameStore';
 
 export default class App extends Component { 
     static propTypes = {
@@ -14,19 +15,20 @@ export default class App extends Component {
         this.state = {};
     }
     componentDidMount() {
-        DeckStore.addChangeListener(::this.onDeckStoreChange);
+        GameStore.addChangeListener(::this.onGameStoreChange);
     }
     componentWillUnmount() {
-        DeckStore.removeChangeListener(::this.onDeckStoreChange);
+        GameStore.removeChangeListener(::this.onGameStoreChange);
     }
-    getDeckState() {
-        return DeckStore.getAllDeck();
+    getGameState() {
+        return GameStore.getAllGameState();
     }
-    onDeckStoreChange() {
-        this.setState(this.getDeckState());
+    onGameStoreChange() {
+        this.setState(this.getGameState());
     }
     onHitClick() {
         console.log('Player chose hit')
+        PlayerActions.hit();
     }
     onStickClick() {
         console.log('Player chose stick')
@@ -36,22 +38,20 @@ export default class App extends Component {
     }
     render() {
         const {
-            dealerHand,
-            playerHand,
+            status,
         } = this.state;
         
         return (
         	<main>
         		<Scoreboard 
-                    gameStatus='' />
+                    gameStatus={status} />
                 
-                <Dealer 
-                    cards={dealerHand} />
+                <Dealer />
 
-                <Player
-                    cards={playerHand} />
+                <Player />
                 
                 <Controls 
+                    gameStatus={status}
                     onHitClick={::this.onHitClick}
                     onStickClick={::this.onStickClick}
                     onNewGameClick={::this.onNewGameClick} />
