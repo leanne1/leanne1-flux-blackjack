@@ -9,5 +9,13 @@ export default {
 		AppDispatcher.handleViewAction({
       		actionType: actionTypes.PLAYER_HIT,
       	});
-	}
+	},
+	/**
+	* Player sticks.
+   	*/
+	stick() {
+		AppDispatcher.handleViewAction({
+	  		actionType: actionTypes.PLAYER_STICK,
+	  	});
+	},	
 };

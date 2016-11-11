@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react';
+import { GAME } from '../constants/config';
 import Dealer from './Dealer';
 import Player from './Player';
 import Scoreboard from './Scoreboard';
 import Controls from './Controls';
 import DeckActions from '../actions/DeckActions';
 import PlayerActions from '../actions/PlayerActions';
+import DealerActions from '../actions/DealerActions';
 import GameStore from '../stores/GameStore';
 
 export default class App extends Component { 
@@ -24,14 +26,22 @@ export default class App extends Component {
         return GameStore.getAllGameState();
     }
     onGameStoreChange() {
-        this.setState(this.getGameState());
+        const gameState = this.getGameState();
+        this.setState(gameState);
+        
+        // Hand play over to dealer
+        if (gameState.status === GAME.STATUS.DEALER_IS_IN_PLAY) {
+            window.setTimeout(() => {
+                DealerActions.isInPlay();   
+            }, 2000);
+            
+        }
     }
     onHitClick() {
-        console.log('Player chose hit')
         PlayerActions.hit();
     }
     onStickClick() {
-        console.log('Player chose stick')
+        PlayerActions.stick();
     }
     onNewGameClick() {
         DeckActions.deal();

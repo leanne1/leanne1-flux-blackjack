@@ -19,6 +19,9 @@ export default class Scoreboard extends Component {
         		{ gameStatus === GAME.STATUS.PLAYER_WINS && 
         			<p>You win!</p>
         		}
+                { gameStatus === GAME.STATUS.PLAYER_BUST && 
+                    <p>You went bust! Dealer wins!</p>
+                }
                 { gameStatus === GAME.STATUS.DEALER_WINS && 
                     <p>Dealer wins!</p>
                 }

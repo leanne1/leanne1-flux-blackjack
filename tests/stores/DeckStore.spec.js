@@ -1,8 +1,74 @@
 import expect from 'expect'
 import * as DeckStore from '../../src/app/stores/DeckStore'
+import { CARDS } from '../../src/app/constants/config';
 
 describe('DeckStore', () => {
     describe('Private methods', () => {
+        describe('createCardDeck()', () => {
+            const deck = DeckStore.createCardDeck();
+            it('should create a 52 card deck', () => {
+                const cardsCount = deck.length;
+                expect(cardsCount).toBe(52);
+            });
+            describe('suits', () => {
+                CARDS.SUITS.forEach((suit) => {
+                    const suitCount = deck.filter((card) => card.suit === suit).length;
+                    it(`should have ${CARDS.FACE_VALUES_COUNT} ${suit}`, () => {
+                        expect(suitCount).toBe(CARDS.FACE_VALUES_COUNT);
+                    });
+                });
+            });
+            describe('face values', () => {
+                CARDS.FACE_VALUES.forEach((faceValue) => {
+                    const value = deck.filter((card) => card.faceValue === faceValue).length;
+                    it(`should have four ${faceValue}'s`, () => {
+                        expect(value).toBe(4);
+                    });
+                });
+            });
+            describe('values', () => {
+                it('should have a total pack value of 340', () => {
+                    const totalValue = deck.reduce((prev, curr) => {
+                        return prev += curr.value;
+                    },0);
+                    expect(totalValue).toBe(340);
+                });
+             });
+        });
+
+        describe('shuffleDeck()', () => {
+            const deck1 = DeckStore.createCardDeck();
+            const deck2 = DeckStore.createCardDeck();
+            const deck3 = DeckStore.createCardDeck();
+            it('should change the order of the cards', () => {
+                const shuffled = DeckStore.shuffleDeck(deck3);
+                // True positive comparison
+                expect(deck1).toEqual(deck2);
+                // Shuffled comparison
+                expect(deck1).toNotEqual(shuffled);
+            });
+        });
+
+        describe('newDeck()', () => {
+            const deck = {};
+            it('should add a new card deck to the passed-in object', () => {
+                DeckStore.newDeck(deck);
+                expect(deck.undealtCards).toExist();
+                expect(deck.undealtCards.length).toBe(52);
+            });
+        });
+
+        describe('dealCards()', () => {
+            it('should return the first n cards from the deck and mutate the deck', () => {
+                const deck = {
+                    undealtCards: [1, 2, 3, 4, 5, 6]
+                };
+                const dealtCards = DeckStore.dealCards(2, deck);
+                expect(dealtCards).toEqual([1, 2]);
+                expect(deck.undealtCards).toEqual([3, 4, 5, 6]);
+            });
+        });
+
         describe('isBlackJack()', () => {
              const hands = [
                 [{},{},{}],
@@ -55,7 +121,7 @@ describe('DeckStore', () => {
                     expected: false,
                 },
                 {
-                    context: 'when there is an ace in the hand but hand is not a Black Jack',
+                    context: 'when there is an ace in the hand but the hand is not a Black Jack',
                     assertion: 'should return false',
                     expected: false,
                 },
@@ -73,8 +139,8 @@ describe('DeckStore', () => {
                     });
                 });
             });
-
         });
+
         describe('getHandValue()', () => {
             const handNoAce = [
                 {
@@ -144,6 +210,94 @@ describe('DeckStore', () => {
                     it(scenario.assertion, () => {
                         expect(actual).toEqual(scenario.expected);
                     });
+                });
+            });
+        });
+
+        describe('isBust()', () => {
+            const notBust = [
+                [
+                    {
+                        value: 5,
+                        faceValue: 5,
+                        suit: 'clubs',
+                    },
+                    {
+                        value: 5,
+                        faceValue: 5,
+                        suit: 'spades',
+                    },
+                ],
+                [
+                    {
+                        value: 10,
+                        faceValue: 12,
+                        suit: 'clubs',
+                    },
+                    {
+                        value: 10,
+                        faceValue: 11,
+                        suit: 'spades',
+                    },
+                     {
+                        value: 1,
+                        faceValue: 1,
+                        suit: 'spades',
+                    },
+                ],
+            ];
+            const bust = [
+                [
+                    {
+                        value: 7,
+                        faceValue: 7,
+                        suit: 'clubs',
+                    },
+                    {
+                        value: 5,
+                        faceValue: 5,
+                        suit: 'spades',
+                    },
+                     {
+                        value: 10,
+                        faceValue: 13,
+                        suit: 'spades',
+                    },
+                ],
+                [
+                    {
+                        value: 1,
+                        faceValue: 5,
+                        suit: 'clubs',
+                    },
+
+                    {
+                        value: 10,
+                        faceValue: 12,
+                        suit: 'spades',
+                    },
+                    {
+                        value: 6,
+                        faceValue: 6,
+                        suit: 'spades',
+                    },
+                    {
+                        value: 5,
+                        faceValue: 5,
+                        suit: 'spades',
+                    },
+                ],
+            ];
+            it('should return false when the hand value is not greater than 21', () => {
+                notBust.forEach((hand) => {
+                    const actual = DeckStore.isBust(hand);
+                    expect(actual).toEqual(false);
+                });
+            });
+            it('should return true when the hand value is greater than 21', () => {
+                bust.forEach((hand) => {
+                    const actual = DeckStore.isBust(hand);
+                    expect(actual).toEqual(true);
                 });
             });
         });
