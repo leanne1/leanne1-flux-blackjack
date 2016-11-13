@@ -21,6 +21,7 @@ export default class Hand extends Component {
         return cards.map((card, i) => {
     		return <Card 
     					key={i}
+					    index={i}
     					isHidden={i === hideCard}
                         suit={card.suit}
     					faceValue={card.faceValue} />
@@ -30,7 +31,7 @@ export default class Hand extends Component {
         const cards = ::this.getCards();
         
         return (
-        	<div>
+        	<div className='hand'>
         		{ cards }
         	</div>
     	);

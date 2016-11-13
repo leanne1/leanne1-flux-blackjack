@@ -1,0 +1,139 @@
+@cardWidth: 190px;
+@cardHeightFactor: 1.4;
+@cardBorderRadius: 10px;
+@cardShadow: 2px 2px 2px 2px rgba(0,0,0,0.07), -1px 1px 1px 1px rgba(0,0,0,0.10);
+@cardBg: #ffffff;
+@cardBorderColor: #cccccc;
+@cardStackOffset: 55px;
+@tableBg: green;
+@suitRedColour: #d33d43;
+@suitBlackColour: #000000;
+
+html,
+main {
+    background-color: @tableBg;
+}
+
+//++++++++++++++++++++++++++++++
+//+ CARD
+//++++++++++++++++++++++++++++++
+.card {
+    width: @cardWidth;
+    height: @cardWidth * @cardHeightFactor;
+    border: solid 1px @cardBorderColor;
+    border-radius: @cardBorderRadius;
+    box-shadow: @cardShadow;
+    background-color: @cardBg;
+    position: absolute;
+}
+.card-face-down {
+    background: @cardBg url('../img/back.svg');
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+.card-hidden {
+    .card-face-down;
+}
+.card-position(10);
+
+.card-position(@n, @i: 0) when (@i =< @n) {
+    .card-@{i} {
+        left: (@i * @cardStackOffset);
+    }
+    .card-position(@n, (@i + 1));
+}
+
+//++++++++++++++++++++++++++++++
+//+ CARD VALUES
+//++++++++++++++++++++++++++++++
+
+.face-value {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 15px;
+    font-weight: 600;
+    font-size: 36px;
+    background-size: cover;
+}
+
+.card-face-value(10);
+
+.card-face-value(@n, @i: 2) when (@i =< @n) {
+    .card-face-@{i}:before {
+        content: '@{i}';
+        .face-value;
+    }
+    .card-face-value(@n, (@i + 1));
+}
+
+.card-face-a:before {
+    content: 'A';
+    .face-value;
+}
+.card-face-j:before {
+    content: 'J';
+    .face-value;
+}
+.card-face-q:before {
+    content: 'Q';
+    .face-value;
+}
+.card-face-k:before {
+    content: 'K';
+    .face-value;
+}
+
+//++++++++++++++++++++++++++++++
+//+ CARD SUITS
+//++++++++++++++++++++++++++++++
+
+.face-suit {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 35px;
+    height: 40px;
+    top: 48px;
+    left: 10px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.card-suit-clubs,
+.card-suit-spades {
+    color: @suitBlackColour;
+}
+
+.card-suit-hearts,
+.card-suit-diamonds {
+    color: @suitRedColour;
+}
+
+.card-suit-clubs:after {
+    background: url('../img/club.svg');
+    .face-suit;
+}
+.card-suit-diamonds:after {
+    background: url('../img/diamond.svg');
+    .face-suit;
+}
+.card-suit-hearts:after {
+    background: url('../img/heart.svg');
+    .face-suit;
+}
+.card-suit-spades:after {
+    background: url('../img/spade.svg');
+    .face-suit;
+}
+
+//++++++++++++++++++++++++++++++
+//+ HAND
+//++++++++++++++++++++++++++++++
+
+.hand {
+    position: relative;
+    width: @cardWidth;
+    height: @cardWidth * @cardHeightFactor;
+}
