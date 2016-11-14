@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { PLAYERS } from '../constants/config';
 import DeckStore from '../stores/DeckStore';
 import Hand from './Hand';
 
@@ -20,9 +21,8 @@ export default class Player extends Component {
         this.setState(this.getDeckState());
     }
     render() {
-        const {
-            playerHand,
-        } = this.state;
+        const { hand = {} } = this.state;
+        const playerHand = hand[PLAYERS.PLAYER];
         
         return (
         	<div>

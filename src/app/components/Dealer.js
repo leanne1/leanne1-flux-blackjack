@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { PLAYERS } from '../constants/config';
 import DeckStore from '../stores/DeckStore';
 import Hand from './Hand';
 
@@ -21,10 +22,11 @@ export default class Dealer extends Component {
     }
     render() {
         const {
-            dealerHand,
-            dealerHiddenCard,
+            hand = {},
+            dealerHiddenCard
         } = this.state;
-
+        const dealerHand = hand[PLAYERS.DEALER];
+       
         return (
         	<div>
         		<h2>Dealer</h2>

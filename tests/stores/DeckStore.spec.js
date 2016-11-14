@@ -36,19 +36,6 @@ describe('DeckStore', () => {
              });
         });
 
-        describe('shuffleDeck()', () => {
-            const deck1 = DeckStore.createCardDeck();
-            const deck2 = DeckStore.createCardDeck();
-            const deck3 = DeckStore.createCardDeck();
-            it('should change the order of the cards', () => {
-                const shuffled = DeckStore.shuffleDeck(deck3);
-                // True positive comparison
-                expect(deck1).toEqual(deck2);
-                // Shuffled comparison
-                expect(deck1).toNotEqual(shuffled);
-            });
-        });
-
         describe('newDeck()', () => {
             const deck = {};
             it('should add a new card deck to the passed-in object', () => {
@@ -190,18 +177,18 @@ describe('DeckStore', () => {
                     ace: undefined,
                 },
                 {
-                    context: 'when there is an ace in the hand and the ace is low',
+                    context: 'when there is an ace in the hand and the ace value is low',
                     assertion: 'should return the sum of card values with ace as 1',
                     hand: handWithAce,
                     expected: 21,
                     ace: undefined,
                 },
                 {
-                    context: 'when there is an ace in the hand and the ace is high',
+                    context: 'when there is an ace in the hand and the ace value is high',
                     assertion: 'should return the sum of card values with ace as 11',
                     hand: handWithAce,
                     expected: 31,
-                    ace: 'high',
+                    ace: CARDS.ACE_HIGH,
                 }
             ];
             scenarios.forEach((scenario) => {
@@ -298,6 +285,80 @@ describe('DeckStore', () => {
                 bust.forEach((hand) => {
                     const actual = DeckStore.isBust(hand);
                     expect(actual).toEqual(true);
+                });
+            });
+        });
+
+        describe('getStrongestHandValue()', () => {
+            context('when there are no aces in the hand', () => {
+                it('should return the hand value', ()=> {
+                    const hand = [
+                        {
+                            value: 7,
+                            faceValue: 7,
+                            suit: 'clubs',
+                        },
+                        {
+                            value: 5,
+                            faceValue: 5,
+                            suit: 'spades',
+                        },
+                        {
+                            value: 10,
+                            faceValue: 13,
+                            suit: 'spades',
+                        },
+                    ];
+                    const actual = DeckStore.getStrongestHandValue(hand);
+                    expect(actual).toBe(22);
+                });
+            });
+            context('when there are aces in the hand', () => {
+                context('when the high ace makes the hand bust', () => {
+                     it('should return the hand value using the ace low value', ()=> {
+                        const hand = [
+                            {
+                                value: 7,
+                                faceValue: 7,
+                                suit: 'clubs',
+                            },
+                            {
+                                value: 5,
+                                faceValue: 5,
+                                suit: 'spades',
+                            },
+                             {
+                                value: 1,
+                                faceValue: 1,
+                                suit: 'spades',
+                            },
+                        ];
+                        const actual = DeckStore.getStrongestHandValue(hand);
+                        expect(actual).toBe(13);
+                    });
+                });
+                context('when the high ace does not make the hand bust', () => {
+                     it('should return the hand value using the ace high value', ()=> {
+                        const hand = [
+                            {
+                                value: 7,
+                                faceValue: 7,
+                                suit: 'clubs',
+                            },
+                            {
+                                value: 3,
+                                faceValue: 3,
+                                suit: 'spades',
+                            },
+                            {
+                                value: 1,
+                                faceValue: 1,
+                                suit: 'spades',
+                            },
+                        ];
+                        const actual = DeckStore.getStrongestHandValue(hand);
+                        expect(actual).toBe(21);
+                    });
                 });
             });
         });

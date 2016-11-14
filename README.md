@@ -8,11 +8,11 @@
 - The aim of the game is for the player to accumulate a higher point total than the dealer, but without going over 21 points. The player computes their score by adding the values of their individual cards.
 
 ### Card values
-- The cards 2 to 10 have their face value, Jack, Queen, and King are worth 10 points each, and the Ace is worth either 1 or 11 points (player's choice).
+- The cards 2 to 10 have their face value, Jack, Queen, and King are worth 10 points each, and the Ace is worth either 1 or 11 points (player's and dealer's choice).
 
 ### The game
 - At the start of a blackjack game, the player and the dealer receive two cards each. The player's cards are normally dealt face up, while the dealer has one face down (hidden from the player) and one face up.
-- The best possible blackjack hand is an opening deal of an ace with any ten-point card. This is called a "blackjack", or a natural 21.
+- The best possible blackjack hand is an opening deal of an ace with any ten-point card. This is called a 'blackjack', or a natural 21.
 - After the cards have been dealt the player must choose to either keep their hand as it is ('stick') or take more cards from the deck ('hit'), one at a time, until either the player judges that the hand is strong enough to go up against the dealer's hand and stands, or until it goes over 21, in which case the player immediately loses ('busts'). The player can take as many cards as s/he likes, as long as they don't bust.
 - Once the player has decided to stick, the dealer turns over their second hidden card.
 - If the dealer has a blackjack (but not the player) then the player loses. If the player has a blackjack (but not the dealer) the player wins. If both player and dealer have a blackjack he games ends in a draw. 

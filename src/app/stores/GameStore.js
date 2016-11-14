@@ -62,7 +62,7 @@ const GameStore = Object.assign(new EventEmitter(), {
 				const dealerHasBlackJack = DeckStore.hasBlackJack(PLAYERS.DEALER);
 				const playerHasBlackJack = DeckStore.hasBlackJack(PLAYERS.PLAYER);
   		 		
-  		 		// Check if the game has concluded
+  		 		/* Player sticks, check if the game has concluded */
   		 		if (dealerHasBlackJack && playerHasBlackJack) {
  					game.status = GAME.STATUS.DRAW;
  				} else if (playerHasBlackJack) {
@@ -71,12 +71,13 @@ const GameStore = Object.assign(new EventEmitter(), {
  					game.status = GAME.STATUS.DEALER_WINS;
  				}
   		 		
-  		 		// Game has not concluded...
-  		 		// This feels hacky. I now want to trigger an action on the DeckStore to handle dealer play.
-  		 		// However, I cannot dispatch an action from here and I cannot have DeckStore waitFor GameStore's
-  		 		// update on the game status because that would create a circularity. I could create a third store, 
-  		 		// just for this situation, or I can do this: set a state in the GameStore that triggers the App view 
-  		 		// to trigger a new action handing play over to the dealer....
+  		 		/* Game has not concluded...
+  		 			This feels hacky. I now want to trigger an action on the DeckStore to handle dealer play.
+  		 			However, I cannot dispatch an action from here and I cannot have DeckStore waitFor GameStore's
+  		 			update on the game status because that would create a circularity. I could create a third store, 
+  		 			just for this situation, or I can do this: set a state in the GameStore that triggers the App view 
+  		 			to trigger a new action handing play over to the dealer.... 
+  		 		*/
   		 		if (game.status === GAME.STATUS.IN_PROGRESS) {
   		 			game.status = GAME.STATUS.DEALER_IS_IN_PLAY;
   		 		}
@@ -87,16 +88,15 @@ const GameStore = Object.assign(new EventEmitter(), {
 				AppDispatcher.waitFor([
 	    			DeckStore.dispatchToken,
 				]);
-				// TODO: player hand could use either ace value here - currently only uses 1
-				const playerHandValue = DeckStore.getPlayerHandValue();
-				const dealerHandValue = DeckStore.getDealerHandValue();
-
-				// TODO: rewrite as a switch statement
+				const playerStrongestHandValue = DeckStore.getStrongestHandValue(PLAYERS.PLAYER);
+				const dealerStrongestHandValue = DeckStore.getStrongestHandValue(PLAYERS.DEALER);
+				
+				/* Dealer has taken required hits, check if the game has concluded */
 				if (DeckStore.isBust(PLAYERS.DEALER)) {
 					game.status = GAME.STATUS.PLAYER_WINS;
-				} else if (playerHandValue > dealerHandValue) {
+				} else if (playerStrongestHandValue > dealerStrongestHandValue) {
 					game.status = GAME.STATUS.PLAYER_WINS;
-				} else if (playerHandValue < dealerHandValue) {
+				} else if (playerStrongestHandValue < dealerStrongestHandValue) {
 					game.status = GAME.STATUS.DEALER_WINS;
 				} else {
 					game.status = GAME.STATUS.DRAW;

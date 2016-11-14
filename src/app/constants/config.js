@@ -18,11 +18,15 @@ export const CARDS = {
 	SUITS: ['clubs', 'hearts', 'spades', 'diamonds'],
 	FACE_VALUES: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
 	FACE_VALUES_COUNT: 13,
+	ACE_HIGH: 'HIGH',
+	ACE_LOW: 'LOW',
+	ACE_VALUE_HIGH: 11,
+	ACE_VALUE_LOW: 1,
 };
 
 export const GAME_PARAMETERS = {
 	DEALER_STICK_VALUE: 17,
-	
+	BLACKJACK_VALUE: 21,
 };
 
 export const CARD_FACE_VALUES = {
@@ -39,5 +43,4 @@ export const CARD_FACE_VALUES = {
 	11: 'j',
 	12: 'q',
 	13: 'k',
-
 };

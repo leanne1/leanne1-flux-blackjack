@@ -3,7 +3,7 @@ import actionTypes from '../constants/actionTypes'
 
 export default {
 	/**
-	* Player takes another card.
+	* Player hits (takes another card).
    	*/
 	hit() {
 		AppDispatcher.handleViewAction({
