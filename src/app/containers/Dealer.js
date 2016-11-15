@@ -29,7 +29,7 @@ export default class Dealer extends Component {
        
         return (
         	<div>
-        		<h2>Dealer</h2>
+        		<h2 className='player-name'>Dealer</h2>
                 <Hand
                     hideCard={dealerHiddenCard}
                     cards={dealerHand} />

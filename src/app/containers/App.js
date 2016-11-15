@@ -52,20 +52,35 @@ export default class App extends Component {
         } = this.state;
         
         return (
-        	<main>
-        		<Scoreboard 
-                    gameStatus={status} />
+            <main className='container-fluid'>
                 
-                <Dealer />
+                <div className='row'>
+                    <div className='col-sm-12 col-md-6'>
+                        <Scoreboard 
+                            gameStatus={status} />
+                    </div>    
+                </div>
 
-                <Player />
-                
-                <Controls 
-                    gameStatus={status}
-                    onHitClick={::this.onHitClick}
-                    onStickClick={::this.onStickClick}
-                    onNewGameClick={::this.onNewGameClick} />
-        	</main>
-    	);
+                 <div className='row'>    
+                    <div className='col-sm-6'>  
+                        <Player />
+                    </div>
+                    <div className='col-sm-6'>    
+                        <Dealer />
+                    </div>
+                </div>
+
+                 <div className='row'>    
+                    <div className='col-sm-12'>
+                        <Controls 
+                            gameStatus={status}
+                            onHitClick={::this.onHitClick}
+                            onStickClick={::this.onStickClick}
+                            onNewGameClick={::this.onNewGameClick} />
+                    </div>            
+                </div>
+
+            </main>
+        );
     }
 }

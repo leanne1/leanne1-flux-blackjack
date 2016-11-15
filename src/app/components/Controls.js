@@ -19,21 +19,25 @@ export default class Controls extends Component {
         const isGameInProgress = gameStatus === GAME.STATUS.IN_PROGRESS;
 
         return (
-        	<menu>
-        		
+        	<menu className='control-panel'>
+
                 <button
-        			disabled={!isGameInProgress}
+        			className='btn btn-info'
+                    disabled={!isGameInProgress}
                     onClick={onHitClick}>
         			Hit
     			</button>
         		
                 <button
-        			disabled={!isGameInProgress}
+        			className='btn btn-info'
+                    disabled={!isGameInProgress}
                     onClick={onStickClick}>
         			Stick
     			</button>
                 
                 <button
+                    className='btn btn-warning'
+                    disabled={isGameInProgress}
                     onClick={onNewGameClick}>
                     New Game
                 </button>    

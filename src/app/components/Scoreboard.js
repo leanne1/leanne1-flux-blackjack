@@ -15,20 +15,28 @@ export default class Scoreboard extends Component {
         } = this.props;
         
         return (
-        	<section>
-        		{ gameStatus === GAME.STATUS.PLAYER_WINS && 
-        			<p>You win!</p>
+        	<section className='scoreboard'>
+                { gameStatus === GAME.STATUS.PLAYER_WINS && 
+        			<div className='alert alert-success'>
+                        <strong>You win!</strong> Congratulations
+                    </div>    
         		}
                 { gameStatus === GAME.STATUS.PLAYER_BUST && 
-                    <p>You went bust! Dealer wins!</p>
+                    <div className='alert alert-danger'>
+                        <strong>Dealer wins!</strong> You went bust
+                    </div>    
                 }
                 { gameStatus === GAME.STATUS.DEALER_WINS && 
-                    <p>Dealer wins!</p>
+                    <div className='alert alert-danger'>
+                        <strong>Dealer wins!</strong> Dealer has stronger hand
+                    </div>
                 }
         		{ gameStatus === GAME.STATUS.DRAW && 
-        			<p>It's a draw!</p>
+        			<div className='alert alert-info'>
+                        <strong>It&apos;s a draw!</strong> Better luck next time
+                    </div>    
                 }
-    		</section>
+           </section>
 		);
     }
 }

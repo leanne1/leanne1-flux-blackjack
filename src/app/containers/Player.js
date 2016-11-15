@@ -26,7 +26,7 @@ export default class Player extends Component {
         
         return (
         	<div>
-        		<h2>Player</h2>
+        		<h2 className='player-name'>Player</h2>
         		<Hand
                     cards={playerHand} />
         	</div>

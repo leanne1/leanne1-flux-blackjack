@@ -8,6 +8,8 @@
 @tableBg: green;
 @suitRedColour: #d33d43;
 @suitBlackColour: #000000;
+@playerNameColour: #5cb85c;
+
 
 html,
 main {
@@ -133,6 +135,14 @@ main {
 }
 
 //++++++++++++++++++++++++++++++
+//+ PLAYER
+//++++++++++++++++++++++++++++++
+
+.player-name {
+    color: @playerNameColour;
+}
+
+//++++++++++++++++++++++++++++++
 //+ HAND
 //++++++++++++++++++++++++++++++
 
@@ -141,3 +151,32 @@ main {
     width: @cardWidth;
     height: @cardWidth * @cardHeightFactor;
 }
+
+//++++++++++++++++++++++++++++++
+//+ CONTROLS
+//++++++++++++++++++++++++++++++
+
+.btn {
+    width: 100px;
+    margin: 0 10px 10px 0;
+}
+
+.control-panel {
+    padding: 20px 0;
+    text-align: center;
+}
+
+//++++++++++++++++++++++++++++++
+//+ Scoreboard
+//++++++++++++++++++++++++++++++
+
+.scoreboard {
+    min-height: 92px;
+    padding: 20px 0 0;            
+}
+
+.alert {
+    max-width: 300px;
+    margin-bottom: 0;
+}
+
