@@ -4,8 +4,6 @@
 
 [Node.js](http://nodejs.org/) >= v4 must be installed.
 
-## Installation
-
 - Clone this repo
 - Run `npm install`
 - `npm start` > [http://localhost:3000](http://localhost:3000)
