@@ -26,11 +26,15 @@ const deck = {
 	},
 };
 
+/*++++++++++++++++++++
++ PRIVATE METHODS
++++++++++++++++++++++*/
+
 /**
  * Create the card deck.
  * @return {array} card deck
  */
-export const createCardDeck = () => {
+export const _createCardDeck = () => {
 	const cardDeck = []; 
 	CARDS.SUITS.forEach(suit => {
 		let count = CARDS.FACE_VALUES_COUNT;
@@ -48,8 +52,8 @@ export const createCardDeck = () => {
  * Create a new card deck, shuffle it then cache it in the store.
  * @param {object} deck - deck object to add new deck to
  */
-export const newDeck = (deck) => {
-	const newDeck = createCardDeck();
+export const _newDeck = (deck) => {
+	const newDeck = _createCardDeck();
 	deck.undealtCards = shuffle(newDeck);
 };
 
@@ -59,7 +63,7 @@ export const newDeck = (deck) => {
  * @param {object} _deck - deck to mutate
  * @return {array} card/s removed from deck
  */
-export const dealCards = (n = 0, _deck = deck) => {
+export const _dealCards = (n = 0, _deck = deck) => {
 	return _deck.undealtCards.splice(0, n);
 };
 
@@ -68,11 +72,11 @@ export const dealCards = (n = 0, _deck = deck) => {
  * @param {array} hand - hand to check
  * @return {boolean} whether the hand is a Black Jack
  */
-export const isBlackJack = (hand) => {
+export const _isBlackJack = (hand) => {
 	if (hand.length > 2) {
 		return false;
 	}
-	const handValue = getHandValue(hand);
+	const handValue = _getHandValue(hand);
 	const hasAce = hand[0].faceValue === 1 || hand[1].faceValue === 1;
 	return hasAce && handValue === 11;
 };
@@ -83,7 +87,7 @@ export const isBlackJack = (hand) => {
  * @param {string} aceValue - low treats aces as 1; high treats aces as 11
  * @return {number} total value of the hand
  */
-export const getHandValue = (hand, aceValue = CARDS.ACE_LOW) => {
+export const _getHandValue = (hand, aceValue = CARDS.ACE_LOW) => {
 	return hand.reduce((prev, curr) => { 
 		const currentValue = curr.value === 1 ? 
 			aceValue === CARDS.ACE_HIGH ? 
@@ -97,8 +101,8 @@ export const getHandValue = (hand, aceValue = CARDS.ACE_LOW) => {
  * Treats all aces as their low value.
  * @return {boolean} whether the hand is bust
  */
-export const isBust = (hand) => {
-	return getHandValue(hand) > GAME_PARAMETERS.BLACKJACK_VALUE;
+export const _isBust = (hand) => {
+	return _getHandValue(hand) > GAME_PARAMETERS.BLACKJACK_VALUE;
 };
 
 /**
@@ -109,11 +113,11 @@ export const isBust = (hand) => {
  * @param {array} hand - dealer's current hand
  * @return {array} hand - the dealer's next hand
  */
-export const dealerHit = (hand) => {
-	const dealerHandValue = getHandValue(hand, CARDS.ACE_HIGH);
+export const _dealerHit = (hand) => {
+	const dealerHandValue = _getHandValue(hand, CARDS.ACE_HIGH);
 	const dealerMustHit = dealerHandValue < GAME_PARAMETERS.DEALER_STICK_VALUE;
 	if (dealerMustHit) {
-		return dealerHit([...hand, ...(dealCards(1))]);
+		return _dealerHit([...hand, ...(_dealCards(1))]);
 	} else {
 		return hand;
 	}
@@ -125,29 +129,93 @@ export const dealerHit = (hand) => {
  * @param {string} hand - hand's whose hand to calculate
  * @return {number} value of the player's strongest hand
  */
-export const getStrongestHandValue = (hand) => {
-	const lowHand = getHandValue(hand);
-	const highHand = getHandValue(hand, CARDS.ACE_HIGH);
+export const _getStrongestHandValue = (hand) => {
+	const lowHand = _getHandValue(hand);
+	const highHand = _getHandValue(hand, CARDS.ACE_HIGH);
 	return highHand > GAME_PARAMETERS.BLACKJACK_VALUE ? lowHand : highHand;
 };
 
+/*++++++++++++++++++++
++ CHANGE HANDLER
++++++++++++++++++++++*/
+
+/**
+ * Store callback invoked by action dispatch.
+ * @param {object} action - action object
+ * @return {boolean} true
+ */
+const registeredCallback = ({ action }) => {
+	switch(action.actionType) {
+	 	case actionTypes.DECK_DEAL:
+	 		_newDeck(deck);
+	 		deck.hand[PLAYERS.DEALER] = _dealCards(2);
+	 		deck.hand[PLAYERS.PLAYER] = _dealCards(2);
+	 		deck.dealerHiddenCard = 0;
+	 		deck.blackJack[PLAYERS.PLAYER] = _isBlackJack(deck.hand[PLAYERS.PLAYER]);
+	 		deck.blackJack[PLAYERS.DEALER] = _isBlackJack(deck.hand[PLAYERS.DEALER]);
+	 		DeckStore.emitChange();
+	 		break;
+	 	
+	 	case actionTypes.PLAYER_HIT:
+			deck.hand[PLAYERS.PLAYER] = [...deck.hand[PLAYERS.PLAYER], ...(_dealCards(1))];
+			deck.isBust[PLAYERS.PLAYER] = _isBust(deck.hand[PLAYERS.PLAYER]);
+			DeckStore.emitChange();
+			break;
+ 		
+ 		case actionTypes.PLAYER_STICK:
+			deck.dealerHiddenCard = null;
+			DeckStore.emitChange();
+ 			break;
+
+ 		case actionTypes.DEALER_IS_IN_PLAY:
+			deck.hand[PLAYERS.DEALER] = _dealerHit(deck.hand[PLAYERS.DEALER]);
+			deck.isBust[PLAYERS.DEALER] = _isBust(deck.hand[PLAYERS.DEALER]);
+			DeckStore.emitChange();
+ 			break;	
+	}
+	return true;
+};
+
+/*++++++++++++++++++++
++ PUBLIC GETTERS
++++++++++++++++++++++*/
+
+/**
+ * getAllDeck.
+ * @return {object} deck store state 
+ */
+const getAllDeck = () => deck;
+
+/**
+ * hasBlackJack.
+ * @param {string} player - whose hand to check for Black Jack
+ * @return {boolean} Whether hand is a Black Jack
+ */
+const hasBlackJack = (player) => deck.blackJack[player];
+
+/**
+ * isBust.
+ * @param {string} player - whose hand to check for whether it's bust
+ * @return {boolean} Whether hand is bust
+ */
+const isBust = (player) => deck.isBust[player];
+
+/**
+ * getHandValue.
+ * @param {string} player - wwhose hand value to get
+ * @param {aceValue} aceValue - whether to treat ace as high or low value
+ * @return {number} Hand value
+ */
+const getHandValue = (player, aceValue) => _getHandValue(deck.hand[player], aceValue);
+
+/**
+ * getStrongestHandValue.
+ * @param {string} player - whose hand value to get
+ * @return {number} Strongest possible hand value
+ */
+const getStrongestHandValue = (player) => _getStrongestHandValue(deck.hand[player]);
 
 const DeckStore = Object.assign(new EventEmitter(), {
-	getAllDeck() {
-		return deck;
-	},
-	hasBlackJack(player) {
-		return deck.blackJack[player];
-	},
-	isBust(player) {
-		return deck.isBust[player];
-	},
-	getHandValue(player, aceValue) {
-		return getHandValue(deck.hand[player], aceValue);
-	},
-	getStrongestHandValue(player) {
-		return getStrongestHandValue(deck.hand[player]);
-	},
 	emitChange() {
     	this.emit(CHANGE_EVENT);
   	},
@@ -163,42 +231,13 @@ const DeckStore = Object.assign(new EventEmitter(), {
   	removeChangeListener(callback) {
     	this.removeListener(CHANGE_EVENT, callback);
   	},
-  	dispatchToken: AppDispatcher.register(({ action }) => {
-		switch(action.actionType) {
-  		 	case actionTypes.DECK_DEAL:
-  		 		newDeck(deck);
-  		 		deck.hand[PLAYERS.DEALER] = dealCards(2);
-  		 		deck.hand[PLAYERS.PLAYER] = dealCards(2);
-  		 		deck.dealerHiddenCard = 0;
-  		 		deck.blackJack[PLAYERS.PLAYER] = isBlackJack(deck.hand[PLAYERS.PLAYER]);
-  		 		deck.blackJack[PLAYERS.DEALER] = isBlackJack(deck.hand[PLAYERS.DEALER]);
-  		 		console.log('deck', deck)
-  		 		DeckStore.emitChange();
-  		 		break;
-  		 	
-  		 	case actionTypes.PLAYER_HIT:
-	 			deck.hand[PLAYERS.PLAYER] = [...deck.hand[PLAYERS.PLAYER], ...(dealCards(1))];
-	 			deck.isBust[PLAYERS.PLAYER] = isBust(deck.hand[PLAYERS.PLAYER]);
-	 			console.log('deck', deck)
-	 			DeckStore.emitChange();
-	 			break;
-	 		
-	 		case actionTypes.PLAYER_STICK:
-				deck.dealerHiddenCard = null;
-				console.log('deck', deck)
-	 			DeckStore.emitChange();
-	 			break;
-
-	 		case actionTypes.DEALER_IS_IN_PLAY:
-				deck.hand[PLAYERS.DEALER] = dealerHit(deck.hand[PLAYERS.DEALER]);
-				deck.isBust[PLAYERS.DEALER] = isBust(deck.hand[PLAYERS.DEALER]);
-
-				console.log('deck', deck)
-	 			DeckStore.emitChange();
-	 			break;	
-  		 }
-  		 return true;
-  	}),
 });
+
+DeckStore.getAllDeck = getAllDeck;
+DeckStore.hasBlackJack = hasBlackJack;
+DeckStore.isBust = isBust;
+DeckStore.getHandValue = getHandValue;
+DeckStore.getStrongestHandValue = getStrongestHandValue;
+DeckStore.dispatchToken = AppDispatcher.register(registeredCallback);
 
 export default DeckStore;

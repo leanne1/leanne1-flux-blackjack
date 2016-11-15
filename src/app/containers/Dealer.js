@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { PLAYERS } from '../constants/config';
 import DeckStore from '../stores/DeckStore';
-import Hand from './Hand';
+import Hand from '../components/Hand';
 
-export default class Player extends Component { 
+export default class Dealer extends Component { 
     constructor() {
         super();
         this.state = {};
@@ -21,14 +21,18 @@ export default class Player extends Component {
         this.setState(this.getDeckState());
     }
     render() {
-        const { hand = {} } = this.state;
-        const playerHand = hand[PLAYERS.PLAYER];
-        
+        const {
+            hand = {},
+            dealerHiddenCard
+        } = this.state;
+        const dealerHand = hand[PLAYERS.DEALER];
+       
         return (
         	<div>
-        		<h2>Player</h2>
-        		<Hand
-                    cards={playerHand} />
+        		<h2>Dealer</h2>
+                <Hand
+                    hideCard={dealerHiddenCard}
+                    cards={dealerHand} />
         	</div>
     	);
     }
