@@ -1,6 +1,10 @@
 # leanne1-flux-blackjack
 
-## Run up the app
+## Working demo
+
+https://leanne1.github.io/leanne1-flux-blackjack/
+
+## Run up the app locally
 
 [Node.js](http://nodejs.org/) >= v4 must be installed.
 

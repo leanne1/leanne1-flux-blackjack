@@ -65,7 +65,7 @@ export default class App extends Component {
                     <div className='col-sm-6'>  
                         <Player />
                     </div>
-                    <div className='col-sm-6'>    
+                    <div className='col-sm-6'>
                         <Dealer />
                     </div>
                 </div>
